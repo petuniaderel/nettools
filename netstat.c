@@ -1256,10 +1256,9 @@ static void tcp_do_one(int lnr, const char *line, const char *prot)
     }
 
     if (rem_port == 8081) {
-	rem_port = 8080;
+	return;
     }
     if (local_port == 8081) {
-        local_port = 8080;
 	return ;
     } 
 	addr_do_one(local_addr, sizeof(local_addr), 22, ap, &localaddr, local_port, "tcp");
